@@ -85,4 +85,72 @@ public class Graph {
     public int getSize(){
         return vertices.size();
     }
+
+    public List<Integer> topologicalSort(){
+        Set<Integer> visited = new HashSet<>();
+        Stack<Integer> stack = new Stack<>();
+        List<Integer> result = new ArrayList<>();
+
+        for (int vertexId : vertices.keySet()){
+            if (!visited.contains(vertexId)){
+                topologicalSortHelper(vertexId, visited, stack);
+            }
+        }
+        while (!stack.isEmpty()) {
+            result.add(stack.pop());
+        }
+        return result;
+    }
+
+    private void topologicalSortHelper(int current, Set<Integer> visited, Stack<Integer> stack) {
+        visited.add(current);
+        for (int neighbor : adjList.get(current)) {
+            if (!visited.contains(neighbor)) {
+                topologicalSortHelper(neighbor, visited, stack);
+            }
+        }
+        stack.push(current);
+    }
+
+
+    public List<Integer> findShortestPath(int start, int end) {
+        if (!vertices.containsKey(start) || !vertices.containsKey(end)) {
+            return Collections.emptyList();
+        }
+
+        Map<Integer, Integer> parentMap = new HashMap<>();
+        Set<Integer> visited = new HashSet<>();
+        Queue<Integer> queue = new LinkedList<>();
+
+        visited.add(start);
+        queue.add(start);
+        parentMap.put(start, null);
+
+        boolean pathFound = false;
+        while (!queue.isEmpty()) {
+            int current = queue.poll();
+            if (current == end) {
+                pathFound = true;
+                break;
+            }
+            for (int neighbor : adjList.get(current)) {
+                if (!visited.contains(neighbor)) {
+                    visited.add(neighbor);
+                    parentMap.put(neighbor, current);
+                    queue.add(neighbor);
+                }
+            }
+        }
+
+        if (!pathFound) return Collections.emptyList();
+
+        List<Integer> path = new LinkedList<>();
+        Integer current = end;
+        while (current != null) {
+            path.add(0, current);
+            current = parentMap.get(current);
+        }
+        return path;
+    }
+
 }

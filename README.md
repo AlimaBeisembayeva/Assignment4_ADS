@@ -59,7 +59,28 @@ The system is built using an object-oriented approach with the following core cl
 
 *(Note: Ensure your screenshot files are named correctly and placed in the `docs/screenshots/` folder so these links render properly on GitHub).*
 
-## F. Reflection Section
-Implementing this graph traversal system deepened my understanding of how interconnected data is represented in computer science. Moving from the theoretical concepts of vertices and edges to writing a functional Adjacency List using HashMaps and Linked Lists highlighted the importance of choosing the right data structure for efficiency.
+## F. Bonus Tasks Implementation Documentation
 
-The primary difference I observed between BFS and DFS is structural and performance-based: BFS requires maintaining an explicit Queue, while DFS elegantly utilizes Java's call stack via recursion. As my experimental results showed, DFS was consistently faster due to avoiding the overhead of Queue object management. The main challenge faced during implementation was ensuring that the algorithms accurately kept track of `visited` nodes. Without the `HashSet` to strictly monitor visited states, cyclic graphs would cause both traversals to fall into infinite loops. Overall, this assignment solidified the relationship between theoretical Big-O complexity and actual runtime behavior.
+### Bonus Task 1: Topological Sort
+* **Concept Overview:** Topological sorting of a Directed Acyclic Graph (DAG) organizes its nodes into a linear sequence such that for every directed connection $u \rightarrow v$, node $u$ strictly precedes node $v$. This layout model is widely used for compiler build system dependencies, task scheduling, and academic course prerequisite pathing.
+* **Implementation Strategy:** Integrated seamlessly via a post-order **DFS Traversal paired with a Stack**:
+    1. The algorithm loops across every vertex index. Unvisited elements safely invoke a recursive helper routine.
+    2. The recursive method locks the current vertex as visited and sweeps down its directed paths to discover adjacent nodes.
+    3. **Core Mechanic:** The algorithm waits until a vertex has completely explored all of its downstream dependencies. Only when a branch hits a dead end does the method push that vertex ID onto a tracking `Stack`.
+    4. Popping elements sequentially off this stack yields the valid dependency-resolved ordering.
+
+### Bonus Task 2: Shortest Path in an Unweighted Graph
+* **Concept Overview:** In an unweighted graph, the shortest path represents the connection string utilizing the absolute minimum number of edges. Because a BFS layout spreads outward uniformly like a wave, the very first instance it crosses a targeted destination vertex guarantees the shortest possible path.
+* **Implementation Strategy:** Adapted the foundational BFS queue framework with a structural path tracking mechanism:
+    1. Instantiated a `parentMap` mapping child node IDs directly to their discovery source parent node IDs, setting the initial starting position parent to `null`.
+    2. As standard BFS iteration pops nodes and checks unvisited neighbors, each new node logs its parent inside the map before entering the queue.
+    3. The moment the current tracking pointer matches the target destination ID, the traversal loops abort immediately.
+    4. The algorithm traces backward from the target destination node through the historical `parentMap` keys until hitting the `null` root element, compiling and reversing the list to return the optimal path sequence.
+
+### Bonus Results Verification Screenshot
+![Снимок экрана (217).png](screens/%D0%A1%D0%BD%D0%B8%D0%BC%D0%BE%D0%BA%20%D1%8D%D0%BA%D1%80%D0%B0%D0%BD%D0%B0%20%28217%29.png)
+
+## G. Reflection Section
+Building this graph system clarified how abstract mathematical models match concrete software engineering practices. Transitioning away from dense $V \times V$ Adjacency Matrices down to localized Adjacency Lists via `HashMap` and `LinkedList` objects showcased how critical intentional collection styling is to structural performance optimization.
+
+The practical comparison between BFS and DFS highlighted their internal structural profiles: BFS depends heavily on explicit object instantiation overhead via tracking queues, while DFS operates efficiently by moving directly across low-level call stack structures. The main engineering challenge was building safe cycle management boundaries; ensuring that `HashSet` collections explicitly guard the visited states of nodes prevents cyclic configurations from driving the application loops into out-of-memory errors. Integrating topological indexing and shortest path models also highlighted how cleanly standard search implementations can be adapted into practical problem-solving tools.
